@@ -7,7 +7,8 @@ const ProductContext = React.createContext();
 class ProductProvider extends Component {
     state = {
         products:[],
-        detailProduct:detailProduct
+        detailProduct:detailProduct,
+        cart:[]
     }
     componentDidMount() {
         this.setProducts();
@@ -33,7 +34,19 @@ class ProductProvider extends Component {
         })
     }
     addToCart = (id) => {
-        console.log(`hello from add to cart. id is ${id}`);
+        let tempProducts = [...this.state.products];
+        //get product by index so that you can retain it in the same position in frontend
+        //because when react re-renders it render it in the last postion when it's changed
+        //index makes you retain the position
+        const index = tempProducts.indexOf(this.getItem(id));
+        const product = tempProducts[index];
+        product.inCart = true;
+        product.count = 1;
+        const price = product.price;
+        product.total = price;
+        this.setState(()=>{
+            return { products: tempProducts, cart: [...this.state.cart, product] }; 
+        },()=>{console.log(this.state)});
     }
 
     render() {
