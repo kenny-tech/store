@@ -6,11 +6,14 @@ const ProductContext = React.createContext();
 
 class ProductProvider extends Component {
     state = {
-        products:[],
-        detailProduct:detailProduct,
-        cart:[],
+        products: [],
+        detailProduct: detailProduct,
+        cart: [],
         modalOpen: false,
-        modalProduct: detailProduct
+        modalProduct: detailProduct,
+        cartSubTotal: 0,
+        cartTax: 0,
+        cartTotal: 0
     }
     componentDidMount() {
         this.setProducts();
@@ -25,6 +28,38 @@ class ProductProvider extends Component {
             return {products: tempProducts}
         })
     }
+
+    increment = (id) => {
+        console.log('this is increment method')
+    }
+
+    decrement = (id) => {
+        console.log('this is decrement method')
+    }
+
+    removeItem = (id) => {
+        console.log('item removed')
+    }
+
+    clearCart = () => {
+        console.log('cart was cleared')
+    }
+
+    addTotals = () => {
+        let subTotal = 0;
+        this.state.cart.map(item => (subTotal += item.total));
+        const tempTax = subTotal * 0.1;
+        const tax = parseFloat(tempTax.toFixed(2));
+        const total = subTotal + tax;
+        this.setState(() => {
+            return {
+                cartSubTotal: subTotal,
+                cartTax: tax,
+                cartTotal: total
+            }
+        })
+    }
+
     getItem = (id) => {
         const product = this.state.products.find(item => item.id === id);
         return product;
@@ -48,7 +83,10 @@ class ProductProvider extends Component {
         product.total = price;
         this.setState(()=>{
             return { products: tempProducts, cart: [...this.state.cart, product] }; 
-        },()=>{console.log(this.state)});
+        },()=>{
+            this.addTotals();
+        }
+      );
     };
 
     openModal = id => {
@@ -71,7 +109,11 @@ class ProductProvider extends Component {
                 handleDetail: this.handleDetail,
                 addToCart: this.addToCart,
                 openModal: this.openModal,
-                closeModal: this.closeModal
+                closeModal: this.closeModal,
+                increment: this.increment,
+                decrement: this.decrement,
+                removeItem: this.removeItem,
+                clearCart: this.clearCart
              }}> 
                 {this.props.children}
             </ProductContext.Provider>
