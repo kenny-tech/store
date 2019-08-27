@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom'; 
-import logo from '../cart.svg';
+import logo from '../phone.png';
 import styled from 'styled-components';
 import { ButtonContainer } from './Button';
 
